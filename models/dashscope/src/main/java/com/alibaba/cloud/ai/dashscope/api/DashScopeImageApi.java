@@ -16,6 +16,12 @@
 package com.alibaba.cloud.ai.dashscope.api;
 
 import com.alibaba.cloud.ai.dashscope.spec.DashScopeApiSpec;
+import com.alibaba.cloud.ai.dashscope.spec.DashScopeApiSpec.DashScopeImageGenerationRequest;
+import com.alibaba.cloud.ai.dashscope.spec.DashScopeApiSpec.DashScopeImageGenerationRequest.DashScopeImageGenerationRequestInput;
+import com.alibaba.cloud.ai.dashscope.spec.DashScopeApiSpec.DashScopeImageGenerationRequest.DashScopeImageGenerationRequestInput.DashScopeImageGenerationRequestInputMessage;
+import com.alibaba.cloud.ai.dashscope.spec.DashScopeApiSpec.DashScopeImageGenerationRequest.DashScopeImageGenerationRequestInput.DashScopeImageGenerationRequestInputMessage.DashScopeImageGenerationRequestInputMessageContent;
+import com.alibaba.cloud.ai.dashscope.spec.DashScopeApiSpec.DashScopeImageRequest;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.model.ApiKey;
@@ -27,13 +33,18 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestClient;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.alibaba.cloud.ai.dashscope.common.DashScopeApiConstants.DEFAULT_BASE_URL;
 import static com.alibaba.cloud.ai.dashscope.common.DashScopeApiConstants.ENABLED;
 import static com.alibaba.cloud.ai.dashscope.common.DashScopeApiConstants.HEADER_ASYNC;
 import static com.alibaba.cloud.ai.dashscope.common.DashScopeApiConstants.IMAGE2IMAGE_RESTFUL_URL;
+import static com.alibaba.cloud.ai.dashscope.common.DashScopeApiConstants.IMAGE_GENERATION_RESTFUL_URL;
 import static com.alibaba.cloud.ai.dashscope.common.DashScopeApiConstants.MULTIMODAL_GENERATION_RESTFUL_URL;
 import static com.alibaba.cloud.ai.dashscope.spec.DashScopeModel.ImageModel.QWEN_IMAGE;
 import static com.alibaba.cloud.ai.dashscope.spec.DashScopeModel.ImageModel.QWEN_MT_IMAGE;
+import static com.alibaba.cloud.ai.dashscope.spec.DashScopeModel.ImageModel.WAN_2_6_IMAGE;
 
 /**
  * @author nuocheng.lxm
@@ -97,6 +108,16 @@ public class DashScopeImageApi {
 
         if (model.startsWith("qwen-image") || model.startsWith("z-image")) {
 			imagesUri = MULTIMODAL_GENERATION_RESTFUL_URL;
+        }else if(model.equals(WAN_2_6_IMAGE.getValue())) {
+            imagesUri = IMAGE_GENERATION_RESTFUL_URL;
+            //处理为新的消息格式
+            DashScopeImageGenerationRequest dashScopeImageGenerationRequest = revertImageGenerationRequest(request);
+            return this.restClient.post()
+                    .uri(imagesUri)
+                    .header(HEADER_ASYNC, ENABLED)
+                    .body(dashScopeImageGenerationRequest)
+                    .retrieve()
+                    .toEntity(DashScopeApiSpec.DashScopeImageAsyncResponse.class);
         } else if (model.equals(QWEN_MT_IMAGE.getValue()) || model.contains("edit")) {
 			imagesUri = IMAGE2IMAGE_RESTFUL_URL;
         }
@@ -108,6 +129,38 @@ public class DashScopeImageApi {
 			.retrieve()
 			.toEntity(DashScopeApiSpec.DashScopeImageAsyncResponse.class);
 	}
+
+    private DashScopeImageGenerationRequest revertImageGenerationRequest(DashScopeImageRequest request) {
+        List<DashScopeImageGenerationRequestInputMessageContent> content = getDashScopeImageGenerationRequestInputMessageContents(request);
+        List<DashScopeImageGenerationRequestInputMessage> imageGenerationRequestInputMessages = new ArrayList<>();
+        imageGenerationRequestInputMessages.add(new DashScopeImageGenerationRequestInputMessage("user",content));
+        return new DashScopeApiSpec.DashScopeImageGenerationRequest(
+                request.model(),
+                new DashScopeImageGenerationRequestInput(imageGenerationRequestInputMessages),
+                new DashScopeApiSpec.DashScopeImageGenerationRequest.DashScopeImageGenerationRequestParameter(
+                        request.parameters().negativePrompt(),
+                        request.parameters().size(),
+                        request.parameters().enableInterleave(),
+                        request.parameters().n(),
+                        request.parameters().maxImages(),
+                        request.parameters().seed(),
+                        request.parameters().promptExtend(),
+                        request.parameters().watermark()
+                ));
+    }
+
+    @NotNull
+    private static List<DashScopeImageGenerationRequestInputMessageContent> getDashScopeImageGenerationRequestInputMessageContents(
+            DashScopeImageRequest request) {
+        List<DashScopeImageGenerationRequestInputMessageContent> content = new ArrayList<>();
+        DashScopeImageGenerationRequestInputMessageContent promptContent = new DashScopeImageGenerationRequestInputMessageContent(
+                request.input().prompt(),null);
+        DashScopeImageGenerationRequestInputMessageContent imageContent = new DashScopeImageGenerationRequestInputMessageContent(
+                null, request.input().baseImageUrl());
+        content.add(promptContent);
+        content.add(imageContent);
+        return content;
+    }
 
 	public ResponseEntity<DashScopeApiSpec.DashScopeImageAsyncResponse> getImageGenTaskResult(String taskId) {
 		return this.restClient.get()

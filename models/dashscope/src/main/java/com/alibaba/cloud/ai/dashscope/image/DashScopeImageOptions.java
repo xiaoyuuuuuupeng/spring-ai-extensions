@@ -109,6 +109,12 @@ public class DashScopeImageOptions implements ImageOptions {
   @JsonProperty("mask_color")
   private Integer[][] maskColor;
 
+  @JsonProperty("max_images")
+  private Integer maxImages;
+
+  @JsonProperty("enable_interleave")
+  private Boolean enableInterleave;
+
   public Boolean getPromptExtend() {
     return promptExtend;
   }
@@ -187,6 +193,22 @@ public class DashScopeImageOptions implements ImageOptions {
 
   public void setMaskColor(Integer[][] maskColor) {
     this.maskColor = maskColor;
+    }
+
+  public void setMaxImages(Integer maxImages) {
+    this.maxImages = maxImages;
+  }
+
+  public Integer getMaxImages() {
+      return maxImages;
+  }
+
+  public Boolean getEnableInterleave() {
+    return enableInterleave;
+  }
+
+  public void setEnableInterleave(Boolean enableInterleave) {
+    this.enableInterleave = enableInterleave;
   }
 
   public static Builder builder() {
