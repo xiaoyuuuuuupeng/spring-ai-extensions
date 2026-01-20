@@ -331,7 +331,7 @@ public class DashScopeImageOptions implements ImageOptions {
         + this.maskImageUrl + '\'' + ", sketchImageUrl='" + this.sketchImageUrl + '\'' + ", sketchWeight="
         + this.sketchWeight + ", sketchExtraction=" + this.sketchExtraction + ", sketchColor="
         + Arrays.toString(this.sketchColor) + ", maskColor=" + Arrays.toString(this.maskColor) + ", maxImages="
-        + this.maxImages + ", enableInterleave=" + this.enableInterleave + + '}';
+        + this.maxImages + ", enableInterleave=" + this.enableInterleave + '}';
   }
 
   public static class Builder {
