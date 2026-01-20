@@ -2100,12 +2100,14 @@ public class DashScopeApiSpec {
     ) {
         @JsonInclude(JsonInclude.Include.NON_NULL)
         public record DashScopeImageGenerationRequestInput(@JsonProperty("messages")List<DashScopeImageGenerationRequestInputMessage> messages) {
-            @JsonInclude(JsonInclude.Include.NON_NULL)
-            public record DashScopeImageGenerationRequestInputMessage(@JsonProperty("role") String role,@JsonProperty("content") List<DashScopeImageGenerationRequestInputMessageContent> content){
-                @JsonInclude(JsonInclude.Include.NON_NULL)
-                public record DashScopeImageGenerationRequestInputMessageContent(@JsonProperty("text") String text,@JsonProperty("image")String image){}
-            }
+
         }
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        public record DashScopeImageGenerationRequestInputMessage(@JsonProperty("role") String role,
+                                                                  @JsonProperty("content") List<DashScopeImageGenerationRequestInputMessageContent> content){
+        }
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        public record DashScopeImageGenerationRequestInputMessageContent(@JsonProperty("text") String text,@JsonProperty("image")String image){}
 
         @JsonInclude(JsonInclude.Include.NON_NULL)
         public record DashScopeImageGenerationRequestParameter(@JsonProperty("negative_prompt") String negativePrompt,

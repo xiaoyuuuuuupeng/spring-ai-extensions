@@ -27,7 +27,7 @@ import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationHandler;
 import io.micrometer.observation.ObservationRegistry;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -230,7 +230,7 @@ public class DashScopeImageModel implements ImageModel {
         var output = asyncResp.output();
         var results = output.results();
         List<DashScopeImageAsyncResponseChoice> choices = output.choices();
-        List<ImageGeneration> gens = new LinkedList<>();
+        List<ImageGeneration> gens = new ArrayList<>();
         ImageResponseMetadata md = toMetadata(asyncResp);
         if (results != null) {
             gens = results.stream().map(r -> new ImageGeneration(new Image(r.url(), null))).toList();

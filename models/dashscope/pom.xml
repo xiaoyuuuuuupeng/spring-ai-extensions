@@ -118,6 +118,11 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+          <groupId>org.jspecify</groupId>
+          <artifactId>jspecify</artifactId>
+        </dependency>
+
         <!-- integration test dependencies -->
         <dependency>
             <groupId>org.springframework.ai</groupId>
