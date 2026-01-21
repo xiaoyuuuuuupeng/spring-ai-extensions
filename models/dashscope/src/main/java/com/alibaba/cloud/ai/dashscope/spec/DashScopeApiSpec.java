@@ -2079,17 +2079,19 @@ public class DashScopeApiSpec {
 
         @JsonInclude(JsonInclude.Include.NON_NULL)
         public record DashScopeImageRequestParameter(@JsonProperty("style") String style,
-                                                     @JsonProperty("size") String size, @JsonProperty("n") Integer n, @JsonProperty("seed") Integer seed,
-                                                     @JsonProperty("ref_strength") Float refStrength, @JsonProperty("ref_mode") String refMode,
-                                                     @JsonProperty("prompt_extend") Boolean promptExtend, @JsonProperty("watermark") Boolean watermark,
+                                                     @JsonProperty("size") String size, @JsonProperty("n") Integer n,
+                                                     @JsonProperty("seed") Integer seed,
+                                                     @JsonProperty("ref_strength") Float refStrength,
+                                                     @JsonProperty("ref_mode") String refMode,
+                                                     @JsonProperty("prompt_extend") Boolean promptExtend,
+                                                     @JsonProperty("watermark") Boolean watermark,
                                                      @JsonProperty("sketch_weight") Integer sketchWeight,
                                                      @JsonProperty("sketch_extraction") Boolean sketchExtraction,
                                                      @JsonProperty("sketch_color") Integer[][] sketchColor,
                                                      @JsonProperty("mask_color") Integer[][] maskColor,
                                                      @JsonProperty("negative_prompt") String negativePrompt,
                                                      @JsonProperty("max_images") Integer maxImages,
-                                                     @JsonProperty("enable_interleave") Boolean enableInterleave){
-        }
+                                                     @JsonProperty("enable_interleave") Boolean enableInterleave) {}
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -2098,16 +2100,20 @@ public class DashScopeApiSpec {
                                                   @JsonProperty("parameters") DashScopeImageGenerationRequestParameter parameters
 
     ) {
+
         @JsonInclude(JsonInclude.Include.NON_NULL)
-        public record DashScopeImageGenerationRequestInput(@JsonProperty("messages")List<DashScopeImageGenerationRequestInputMessage> messages) {
+        public record DashScopeImageGenerationRequestInput(
+                @JsonProperty("messages") List<DashScopeImageGenerationRequestInputMessage> messages) {
 
         }
+
         @JsonInclude(JsonInclude.Include.NON_NULL)
         public record DashScopeImageGenerationRequestInputMessage(@JsonProperty("role") String role,
-                                                                  @JsonProperty("content") List<DashScopeImageGenerationRequestInputMessageContent> content){
-        }
+                                                                  @JsonProperty("content") List<DashScopeImageGenerationRequestInputMessageContent> content) {}
+
         @JsonInclude(JsonInclude.Include.NON_NULL)
-        public record DashScopeImageGenerationRequestInputMessageContent(@JsonProperty("text") String text,@JsonProperty("image")String image){}
+        public record DashScopeImageGenerationRequestInputMessageContent(@JsonProperty("text") String text,
+                                                                         @JsonProperty("image") String image) {}
 
         @JsonInclude(JsonInclude.Include.NON_NULL)
         public record DashScopeImageGenerationRequestParameter(@JsonProperty("negative_prompt") String negativePrompt,

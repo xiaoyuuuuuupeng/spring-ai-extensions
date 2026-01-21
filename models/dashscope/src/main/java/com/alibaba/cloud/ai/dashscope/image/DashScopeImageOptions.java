@@ -573,10 +573,6 @@ public class DashScopeImageOptions implements ImageOptions {
         this.options.enableInterleave = enableInterleave;
         return this;
     }
-    @Deprecated
-    public Builder withEnableInterleave(Boolean enableInterleave) {
-        return enableInterleave(enableInterleave);
-    }
 
     public DashScopeImageOptions build() {
       return options;
