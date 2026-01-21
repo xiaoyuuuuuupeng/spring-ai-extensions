@@ -146,13 +146,19 @@ public class DashScopeImageApi {
     @NonNull
     private List<DashScopeImageGenerationRequestInputMessageContent> getDashScopeImageGenerationRequestInputMessageContents(
             DashScopeImageRequest request) {
+        String prompt = request.input().prompt();
+        String baseImageUrl = request.input().baseImageUrl();
         List<DashScopeImageGenerationRequestInputMessageContent> content = new ArrayList<>();
-        DashScopeImageGenerationRequestInputMessageContent promptContent = new DashScopeImageGenerationRequestInputMessageContent(
-                request.input().prompt(),null);
-        DashScopeImageGenerationRequestInputMessageContent imageContent = new DashScopeImageGenerationRequestInputMessageContent(
-                null, request.input().baseImageUrl());
-        content.add(promptContent);
-        content.add(imageContent);
+
+        if (prompt != null && !prompt.isEmpty()){
+            DashScopeImageGenerationRequestInputMessageContent promptContent = new DashScopeImageGenerationRequestInputMessageContent(prompt,null);
+            content.add(promptContent);
+        }
+        if (baseImageUrl != null && !baseImageUrl.isEmpty()){
+            DashScopeImageGenerationRequestInputMessageContent imageContent = new DashScopeImageGenerationRequestInputMessageContent(
+                    null, baseImageUrl);
+            content.add(imageContent);
+        }
         return content;
     }
 

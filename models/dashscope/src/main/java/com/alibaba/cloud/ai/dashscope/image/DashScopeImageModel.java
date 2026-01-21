@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -233,14 +234,16 @@ public class DashScopeImageModel implements ImageModel {
         List<ImageGeneration> gens = new ArrayList<>();
         ImageResponseMetadata md = toMetadata(asyncResp);
         if (results != null) {
-            gens = results.stream().map(r -> new ImageGeneration(new Image(r.url(), null))).toList();
+            gens = results.stream().map(r -> new ImageGeneration(new Image(r.url(), null))).collect(Collectors.toList());
         }
         if (choices != null) {
             for (DashScopeImageAsyncResponseChoice choice : choices) {
                 DashScopeImageAsyncResponseMessage message = choice.message();
                 List<DashScopeImageAsyncResponseContent> content = message.content();
                 for (DashScopeImageAsyncResponseContent dashScopeImageAsyncResponseContent : content) {
-                    gens.add(new ImageGeneration(new Image(dashScopeImageAsyncResponseContent.image(), null)));
+                    if(dashScopeImageAsyncResponseContent.image() != null && !dashScopeImageAsyncResponseContent.image().isEmpty()){
+                        gens.add(new ImageGeneration(new Image(dashScopeImageAsyncResponseContent.image(), null)));
+                    }
                 }
             }
         }
